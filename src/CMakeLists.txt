@@ -26,6 +26,13 @@ set(SOURCE_FILES
     entry.cc
 )
 
+set(HEADER_FILES
+pinyin.h
+simple_highlight.h
+simple_tokenizer.h
+)
+
+
 OPTION(BUILD_STATIC "Option to build static lib" OFF)
 if (IOS OR BUILD_STATIC)
 # iOS only support static library.
@@ -47,6 +54,19 @@ else()
   include_directories(${SQLITE3_HEADERS_DIR})
   target_include_directories(simple INTERFACE ${SQLITE3_HEADERS_DIR})
 endif()
+
+set_target_properties(simple PROPERTIES
+FRAMEWORK TRUE
+FRAMEWORK_VERSION A
+MACOSX_FRAMEWORK_IDENTIFIER me.sending.app.simple
+# MACOSX_FRAMEWORK_INFO_PLIST Info.plist
+# "current version" in semantic format in Mach-O binary file
+VERSION 1.0.0
+# "compatibility version" in semantic format in Mach-O binary file
+SOVERSION 1.0.0
+PUBLIC_HEADER "${HEADER_FILES}"
+XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+)
 
 target_link_libraries(simple PUBLIC coverage_config PRIVATE PINYIN_TEXT SQLite3)
 
